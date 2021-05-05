@@ -1,5 +1,4 @@
 use crate::subsequence::*;
-use encoding_rs::SHIFT_JIS;
 use regex::Regex;
 use std::{
     convert::TryFrom,
