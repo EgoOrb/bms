@@ -5,11 +5,11 @@ use std::{
     io::{BufReader, Read},
     path::{PathBuf},
 };
+use encoding_rs::SHIFT_JIS;
 use regex::Regex;
 use crate::subsequence::*;
 
 pub struct ChartData {
-    pub path: PathBuf,
     pub player: u8,
     pub genre: String,
     pub title: String,
@@ -30,7 +30,7 @@ pub enum Object {
 
 
 impl ChartData {
-    fn from_data(path: PathBuf, data: String) -> Result<Self, Box<dyn Error>> {
+    fn from_data(data: String) -> Result<Self, Box<dyn Error>> {
         let r = Regex::new(r"#(.{3})(.{2}):(.*)").unwrap();
         let mut player = 0;
         let mut genre = "".to_string();
@@ -69,7 +69,6 @@ impl ChartData {
         }
 
         Ok(ChartData {
-            path,
             player,
             genre,
             title,
@@ -82,13 +81,22 @@ impl ChartData {
     }
 
     pub fn from_path(p: PathBuf) -> Result<Self, Box<dyn Error>> {
-        // TODO: detect Shift JIS charts and convert them to UTF-8
+
         let f = File::open(&p)?;
         let mut r = BufReader::new(f);
-        let mut data = String::new();
-        r.read_to_string(&mut data).expect("Failed to read data");
 
-        Self::from_data(p.parent().unwrap().into(), data)
+        let mut buffer: Vec<u8> = Vec::new();
+        r.read(&mut buffer)?;
+
+        // As most BMS charts are encoded as Shift-JIS, it's necessary
+        // to convert the data to UTF-8 so Rust can work with it. 
+        let (data, _, invalid) = SHIFT_JIS.decode(&buffer);
+        if !invalid {
+            ChartData::from_data(data.into())
+        } else {
+            ChartData::from_data(String::from_utf8(buffer)?)
+        }
+
     }
 
     pub fn count_measures(&self) -> usize {
