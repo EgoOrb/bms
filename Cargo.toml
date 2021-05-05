@@ -1,6 +1,6 @@
 [package]
 name = "bms"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2018"
 description = "Be-Music Source parser"
 license = "MIT"
