@@ -82,18 +82,10 @@ impl ChartData {
     pub fn from_path(p: PathBuf) -> Result<Self, Box<dyn Error>> {
         let f = File::open(&p)?;
         let mut r = BufReader::new(f);
+        let mut data = String::new();
+        r.read_to_string(&mut data).expect("Failed to read data");
 
-        let mut buffer: Vec<u8> = Vec::new();
-        r.read(&mut buffer)?;
-
-        // As most BMS charts are encoded as Shift-JIS, it's necessary
-        // to convert the data to UTF-8 so Rust can work with it.
-        let (data, _, invalid) = SHIFT_JIS.decode(&buffer);
-        if !invalid {
-            ChartData::from_data(data.into())
-        } else {
-            ChartData::from_data(String::from_utf8(buffer)?)
-        }
+        Self::from_data(data)
     }
 
     pub fn count_measures(&self) -> usize {
