@@ -113,17 +113,6 @@ impl ChartData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn load_test() {
-        let data: ChartData = ChartData::from_path("./assets/2r_bbkkbkk/_n.bms".into()).unwrap();
-
-        assert_eq!(data.player, 1);
-        assert_eq!(data.genre, "UK HARDCORE".to_string());
-        assert_eq!(data.title, "B.B.K.K.B.K.K. (NORMAL)".to_string());
-        assert_eq!(data.artist, "nora2r / 出前".to_string());
-        assert_eq!(data.bpm, 170.0);
-        assert_eq!(data.play_level, 3);
-    }
 
     #[test]
     fn sequence_test() {
