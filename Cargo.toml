@@ -4,6 +4,7 @@ version = "0.1.1"
 edition = "2018"
 description = "Be-Music Source parser"
 license = "MIT"
+repository = "https://github.com/EgoOrb/bms"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
