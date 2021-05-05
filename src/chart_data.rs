@@ -1,13 +1,13 @@
+use crate::subsequence::*;
+use encoding_rs::SHIFT_JIS;
+use regex::Regex;
 use std::{
     convert::TryFrom,
     error::Error,
     fs::File,
     io::{BufReader, Read},
-    path::{PathBuf},
+    path::PathBuf,
 };
-use encoding_rs::SHIFT_JIS;
-use regex::Regex;
-use crate::subsequence::*;
 
 pub struct ChartData {
     pub player: u8,
@@ -21,13 +21,12 @@ pub struct ChartData {
 }
 
 /// In Be-Music Source terminology, an object represents anything
-/// that can appear in a chart. 
+/// that can appear in a chart.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Object {
     Silent,
     Note { sound: usize },
 }
-
 
 impl ChartData {
     fn from_data(data: String) -> Result<Self, Box<dyn Error>> {
@@ -81,7 +80,6 @@ impl ChartData {
     }
 
     pub fn from_path(p: PathBuf) -> Result<Self, Box<dyn Error>> {
-
         let f = File::open(&p)?;
         let mut r = BufReader::new(f);
 
@@ -89,14 +87,13 @@ impl ChartData {
         r.read(&mut buffer)?;
 
         // As most BMS charts are encoded as Shift-JIS, it's necessary
-        // to convert the data to UTF-8 so Rust can work with it. 
+        // to convert the data to UTF-8 so Rust can work with it.
         let (data, _, invalid) = SHIFT_JIS.decode(&buffer);
         if !invalid {
             ChartData::from_data(data.into())
         } else {
             ChartData::from_data(String::from_utf8(buffer)?)
         }
-
     }
 
     pub fn count_measures(&self) -> usize {
@@ -106,17 +103,13 @@ impl ChartData {
     }
 
     pub fn get_measure(&self, measure: u32) -> Vec<SubSequence> {
-        self
-            .subseqs
+        self.subseqs
             .iter()
             .filter(|&x| x.measure == measure)
             .map(|x| x.clone())
             .collect()
     }
 }
-
-
-
 
 #[cfg(test)]
 mod tests {

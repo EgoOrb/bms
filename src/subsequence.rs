@@ -1,10 +1,9 @@
 use std::convert::TryFrom;
 
+use crate::chart_data::Object;
 use itertools::Itertools;
 use lazy_static::lazy_static;
 use regex::Regex;
-use crate::chart_data::Object;
-
 
 /// (TODO: I'm not sure of the proper terminology, if there even is any)
 /// A sequence of notes played at a given time.
